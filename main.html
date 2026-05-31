@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чек-лист путешественника ✈️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .progress-container {
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 25px;
+            height: 35px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #ff6b6b, #ee5a24);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .checklist {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .checklist-item {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item:hover {
+            transform: translateX(5px);
+            border-color: #ee5a24;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .checklist-item.checked {
+            background: #f0f9f0;
+            border-color: #4caf50;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #ee5a24;
+        }
+
+        .checklist-item .item-name {
+            flex: 1;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .checklist-item.checked .item-name {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .item-id {
+            background: #f0f0f0;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #666;
+            font-family: monospace;
+        }
+
+        .toggle-form, .delete-form {
+            display: inline;
+        }
+
+        .toggle-btn, .delete-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .toggle-btn {
+            background: #00b894;
+            color: white;
+        }
+
+        .toggle-btn:hover {
+            background: #00a382;
+            transform: scale(1.05);
+        }
+
+        .delete-btn {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #ff4444;
+            transform: scale(1.05);
+        }
+
+        .add-item-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .add-item-form h3 {
+            margin-bottom: 15px;
+            color: #ee5a24;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .add-item-form input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .add-item-form input:focus {
+            outline: none;
+            border-color: #ee5a24;
+        }
+
+        .add-item-form button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .add-item-form button:hover {
+            transform: translateY(-2px);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .reset-btn {
+            flex: 1;
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .reset-btn:hover {
+            background: #5a4bd1;
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        .empty-state .suggestion {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #ee5a24;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .content {
+                padding: 20px;
+            }
+            .form-group {
+                flex-direction: column;
+            }
+            .checklist-item {
+                flex-wrap: wrap;
+            }
+            .item-id {
+                order: 1;
+            }
+            .toggle-btn, .delete-btn {
+                order: 2;
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+        }
+
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .flash-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .flash-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .flash-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                ✈️ Чек-лист путешествия
+                🎒
+            </h1>
+            <p>Подготовьтесь к идеальному путешествию!</p>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">{{ total_count }}</div>
+                    <div class="stat-label">Всего вещей</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ completed_count }}</div>
+                    <div class="stat-label">Собрано</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Flash сообщения -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ percentage }}%;">
+                        {{ percentage }}%
+                    </div>
+                </div>
+            </div>
+
+            <!-- Форма добавления нового пункта -->
+            <div class="add-item-form">
+                <h3>➕ Добавить новую вещь</h3>
+                <form action="/add" method="POST">
+                    <div class="form-group">
+                        <input type="text" name="item_name" placeholder="Например: Солнцезащитный крем" maxlength="100" required>
+                        <button type="submit">Добавить</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Список вещей -->
+            {% if checklist %}
+                <div class="checklist">
+                    {% for item in checklist %}
+                        <div class="checklist-item {% if item.checked %}checked{% endif %}">
+                            <form action="/toggle/{{ item.id }}" method="POST" class="toggle-form">
+                                <button type="submit" name="check"class="toggle-btn">
+                                    {% if item.checked %}✅ Собрано{% else %}⬜ Не собрано{% endif %}
+                                </button>
+                            </form>
+                            <span class="item-name">{{ item.name }}</span>
+                            <span class="item-id">#{{ item.id }}</span>
+                            <form action="/delete/{{ item.id }}" method="POST" class="delete-form" onsubmit="return confirm('Удалить &quot;{{ item.name }}&quot;?')">
+                                <button type="submit" class="delete-btn">🗑️ Удалить</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div style="font-size: 48px;">📭</div>
+                    <p>Список пуст. Добавьте новые вещи!</p>
+                    <p class="suggestion">💡 Попробуйте добавить: паспорт, зарядку, аптечку</p>
+                </div>
+            {% endif %}
+
+            <!-- Кнопка сброса списка -->
+            <div class="action-buttons">
+                <form action="/reset" method="POST" style="flex: 1;" onsubmit="return confirm('Сбросить список к начальному состоянию? Все изменения будут потеряны.')">
+                    <button type="submit" class="reset-btn">
+                        🔄 Сбросить список
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>✨ Счастливого пути! Не забудьте отметить всё необходимое ✨</p>
+            <p style="font-size: 0.8rem; margin-top: 10px;">
+                📌 Чтобы отметить вещь как собранную, нажмите кнопку "Собрано"
+            </p>
+        </div>
+    </div>
+</body>
+</html>
